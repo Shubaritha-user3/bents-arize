@@ -105,6 +105,11 @@ Response (GREETING, RELEVANT, INAPPROPRIATE, or NOT_RELEVANT):`;
     model: 'gpt-4o-2024-11-20',
     messages: [{ role: 'user', content: relevancePrompt }],
     temperature: 0
+  }, {
+    headers: {
+      'openinference.trace': 'true',
+      'openinference.input.prompt': relevancePrompt
+    }
   });
   console.log('🔍 [Relevance Check] Result:', {
     query,
