@@ -15,8 +15,8 @@ export function register() {
   
   // Create Arize metadata with headers
   const metadata = new Metadata();
-  metadata.set("space_id", process.env.ARIZE_SPACE_ID || "");
-  metadata.set("api_key", process.env.ARIZE_API_KEY || "");
+  metadata.set("space_id", "U3BhY2U6MTU3ODg6L2o1Rw==");
+  metadata.set("api_key", "8bb925c083f54c64a9c");
   
   console.log('Arize credentials configured:', {
     hasSpaceId: Boolean(process.env.ARIZE_SPACE_ID),
