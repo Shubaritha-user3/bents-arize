@@ -296,38 +296,33 @@ export async function POST(req: Request) {
       });
     }
 
-    // Before final stream
-    console.log('⏳ [POST] Streaming response');
-    const result = await streamText({
+    // Create the completion with streaming
+    const stream = await streamText({
       model: openai('gpt-4o-2024-11-20'),
       messages: [
-        { role: "system", 
-          content: SYSTEM_INSTRUCTIONS 
-        },
-        { 
-          role: "user", 
-          content: `Chat History:\n${JSON.stringify(chatHistory.slice(-5))}\n\nContext:\n${contextTexts}\n\nQuestion: ${lastUserMessage}` 
-        }
-      ],
+        { role: "system", content: SYSTEM_INSTRUCTIONS },
+        { role: "user", content: `Chat History:\n${JSON.stringify(chatHistory.slice(-5))}\n\nContext:\n${contextTexts}\n\nQuestion: ${lastUserMessage}` }
+      ]
     });
-    console.log('✅ [POST] Response streamed');
-    return result.toDataStreamResponse();
+    
+    // Return the stream response
+    return stream.toDataStreamResponse();
 
   } catch (error) {
     console.error('❌ [POST] Error:', {
       error: error instanceof Error ? error.message : 'Unknown error'
     });
-    // Create a new error response instead of modifying the error object
-    const errorResponse = {
-      type: 'error',
-      status: 500,
-      details: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString()
-    };
-
-    return new Response(JSON.stringify(errorResponse), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({
+        type: 'error',
+        status: 500,
+        details: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString()
+      }), 
+      { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
   }
 }
